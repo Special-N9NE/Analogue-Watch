@@ -18,6 +18,7 @@ import android.view.View
 import androidx.annotation.ColorInt
 import androidx.annotation.FloatRange
 import androidx.core.content.res.use
+import androidx.core.graphics.toColorInt
 import java.util.Calendar
 import kotlin.math.cos
 import kotlin.math.min
@@ -46,9 +47,10 @@ import kotlin.math.sin
  * and methods, developers can create highly customizable and visually appealing clock displays tailored to
  * their application's requirements.
 <p>
- *  * Created by Jummania on 23,May,2024.
- *  * Email: sharifuddinjumman@gmail.com
- *  * Dhaka, Bangladesh.
+ *  * Originally Created by Jummania on 23,May,2024.
+ *  * Forked by Special-N9NE on 09,Nov,2025
+ *  * Email: abigdeli42@gmail.com
+ *  * Tehran, Iran.
  */
 class AnalogClock @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -117,6 +119,9 @@ class AnalogClock @JvmOverloads constructor(
 
     // Handler to schedule periodic updates on the main thread
     private val handler = Handler(Looper.getMainLooper())
+
+    //used for getting instance of calendar
+    private var calendarProvider: () -> Calendar? = { null }
 
 
     /**
@@ -419,6 +424,15 @@ class AnalogClock @JvmOverloads constructor(
         )
     }
 
+    /**
+     * used for getting instance of Calendar if you want to set a specific time-zome or any other
+     * customization. if you don't use it, default Calendar will be used.
+     *
+     * @param calendarProvider a function which returns a Calendar instance.
+     */
+    fun setOnGetCalendarInstance(calendarProvider: () -> Calendar) {
+        this.calendarProvider = calendarProvider
+    }
 
     /**
      * Creates and draws clock hands (hour, minute, and optionally second) on the canvas.
@@ -428,7 +442,7 @@ class AnalogClock @JvmOverloads constructor(
      */
     private fun createHand(canvas: Canvas) {
         // Get the current time
-        val calendar = Calendar.getInstance()
+        val calendar = calendarProvider() ?: Calendar.getInstance()
 
         val seconds = calendar.get(Calendar.SECOND)
         val minutes = calendar.get(Calendar.MINUTE) + seconds / 60.0f
@@ -531,7 +545,7 @@ class AnalogClock @JvmOverloads constructor(
      * @return The integer representation of the color.
      */
     private fun getColor(colorCode: String): Int {
-        return Color.parseColor(colorCode)
+        return colorCode.toColorInt()
     }
 
 

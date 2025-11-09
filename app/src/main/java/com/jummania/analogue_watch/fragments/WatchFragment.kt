@@ -15,6 +15,9 @@ import androidx.preference.PreferenceManager
 import com.jummania.analogue_watch.R
 import com.jummania.analogue_watch.databinding.FragmentWatchBinding
 import soup.neumorphism.NeumorphShapeAppearanceModel
+import java.util.Calendar
+import java.util.Locale
+import java.util.TimeZone
 
 
 class WatchFragment : Fragment() {
@@ -43,6 +46,11 @@ class WatchFragment : Fragment() {
         binding?.apply {
             val backgroundColor = getColor("backgroundColor", "#FEF7FF")
             clock.setBackgroundColor(backgroundColor)
+
+            clock.setOnGetCalendarInstance {
+                Calendar.getInstance(TimeZone.getTimeZone("Europe/Berlin"))
+            }
+
             clock.setMarkerColor(primaryColor, secondaryColor)
             clock.setHandColor(secondaryColor, primaryColor, primaryColor)
             clock.setTextColor(getColor("textColor", "#000000"))
